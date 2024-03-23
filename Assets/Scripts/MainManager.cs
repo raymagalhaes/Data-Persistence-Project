@@ -20,13 +20,8 @@ public class MainManager : MonoBehaviour
 
     private bool m_GameOver = false;
 
-    string saveFile;
-
-
-    // Start is called before the first frame update
     void Start()
     {
-        saveFile = Application.persistentDataPath + "savefile.json";
 
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
@@ -43,7 +38,8 @@ public class MainManager : MonoBehaviour
             }
         }
 
-        LoadHighScore();
+        DisplayHighScore();
+
     }
 
     private void Update()
@@ -65,7 +61,6 @@ public class MainManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                SaveHighScore();
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             }
         }
@@ -80,54 +75,16 @@ public class MainManager : MonoBehaviour
         {
             DataManager.Instance.HighScoreName = DataManager.Instance.playerName;
             DataManager.Instance.HighScore = m_Points;
+            DataManager.Instance.SaveHighScore();
             DisplayHighScore();
         }
 
     }
-
-    [System.Serializable]
-    class SaveData
-    {
-        public int highScore;
-        public string highScoreName;
-    }
-
-    void SaveHighScore()
-    {
-
-        SaveData data = new SaveData();
-        data.highScore = DataManager.Instance.HighScore;
-        data.highScoreName = DataManager.Instance.HighScoreName;
-
-        string json = JsonUtility.ToJson(data);
-
-        File.WriteAllText(saveFile, json);
-
-    }
-
-    void LoadHighScore()
-    {
-
-        if (File.Exists(saveFile))
-        {
-            string json = File.ReadAllText(saveFile);
-            SaveData data = JsonUtility.FromJson<SaveData>(json);
-            DataManager.Instance.HighScore = data.highScore;
-            DataManager.Instance.HighScoreName = data.highScoreName;
-        }
-        else
-        {
-            DataManager.Instance.HighScore = 0;
-        }
-
-        DisplayHighScore();
-
-    }
-
     void DisplayHighScore()
     {
-        HighScoreText.text = $"High Score : {DataManager.Instance.HighScoreName} : {DataManager.Instance.HighScore}";
+        HighScoreText.text = $"Best Score : {DataManager.Instance.HighScoreName} : {DataManager.Instance.HighScore}";
     }
+
 
     public void GameOver()
     {

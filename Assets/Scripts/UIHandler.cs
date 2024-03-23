@@ -10,6 +10,13 @@ public class UIHandler : MonoBehaviour
 
     public Button startButton;
     public TextMeshProUGUI playerNameInput;
+    public TextMeshProUGUI highScoreText;
+
+    void Start()
+    {
+        DataManager.Instance.LoadHighScore();
+        highScoreText.text = $"Best Score : {DataManager.Instance.HighScoreName} : {DataManager.Instance.HighScore}";
+    }
 
     public void startGame()
     {
